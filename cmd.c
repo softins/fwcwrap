@@ -57,6 +57,9 @@ int cmd(char *argv[])
 		if (errno != EINTR)
 			return -1;
 
+	if (WIFEXITED(status))
+		status = WEXITSTATUS(status);
+
 	return status;
 }
 
@@ -130,6 +133,9 @@ int cmdpclose(FILE *fp)
 	while (waitpid(pid, &status, 0) < 0)
 		if (errno != EINTR)
 			return -1;
+
+	if (WIFEXITED(status))
+		status = WEXITSTATUS(status);
 
 	return status;
 }

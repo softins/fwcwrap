@@ -1,6 +1,7 @@
 <?php
 	$fwcwrap = '/usr/local/bin/fwcwrap';
 	$zone = 'remote';
+	$trusted = 'trusted';
 
 	$myip = $_SERVER['REMOTE_ADDR'];
 
@@ -24,9 +25,17 @@
 		}
 	}
 
-	$cmd = "$fwcwrap -z $zone -l $myip";
+	$cmd = "$fwcwrap -z $trusted -l $myip";
 	$ret = exec($cmd, $output, $status);
 	error_log("cmd=\"$cmd\", ret=$ret, output=" . join('|',$output) . ", status=$status");
+
+	if ($status != 0) {
+		$trusted = null;
+
+		$cmd = "$fwcwrap -z $zone -l $myip";
+		$ret = exec($cmd, $output, $status);
+		error_log("cmd=\"$cmd\", ret=$ret, output=" . join('|',$output) . ", status=$status");
+	}
 ?>
 <!DOCTYPE html>
 <html>
@@ -68,10 +77,12 @@ table.main td {
 <tr><td><h3 style="color: red">Your IP address <?= $myip ?> is NOT enabled for remote access</h3></td></tr>
 <tr><td><h3>Click the button below to enable your IP address</h3></td></tr>
 <tr><td align="center"><input type="submit" name="submit" value="Add IP" /></td></tr>
-<?php } else { ?>
+<?php } elseif ($trusted == null) { ?>
 <tr><td><h3 style="color: green">Your IP address <?= $myip ?> is enabled for remote access</h3></td></tr>
 <tr><td><h3>Click the button below to disable your IP address</h3></td></tr>
 <tr><td align="center"><input type="submit" name="submit" value="Remove IP" /></td></tr>
+<?php } else { ?>
+<tr><td><h3 style="color: blue">Your IP address <?= $myip ?> is permanently trusted for remote access</h3></td></tr>
 <?php } ?>
 </table>
 </form>

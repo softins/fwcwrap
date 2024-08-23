@@ -55,7 +55,6 @@ td.r {
 div.wrap {
 	display: inline-block;
 	text-align: left;
-	*display: inline;
 	zoom: 1;
 }
 table.main {

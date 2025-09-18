@@ -1,4 +1,25 @@
 <?php
+	function is_ip_in_cidr($ip, $cidr)
+	{
+		list($net, $mask) = explode('/', $cidr);
+		$ip = inet_pton($ip);
+		$net = inet_pton($net);
+		$prefix = $mask >> 3; //dividing by 8
+
+		//comparing bytes
+		if(strncmp($ip, $net, $prefix))
+			return false;
+
+		$bits = $mask & 7; //bits remaining to compare
+
+		//no bits to compare
+		if ($bits == 0)
+			return true;
+
+		$ch_mask = 255 >> $bits ^ 255; //making mask to compare remaining bits
+		return (ord($ip[$prefix]) & $ch_mask) == (ord($net[$prefix]) & $ch_mask);
+	}
+
 	$fwcwrap = '/usr/local/bin/fwcwrap';
 	$zone = 'remote';
 	$trusted = 'trusted';

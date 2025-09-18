@@ -46,14 +46,14 @@
 		}
 	}
 
-	$cmd = "$fwcwrap -z $trusted -l $myip";
+	$cmd = "$fwcwrap -z $trusted -q $myip";
 	$ret = exec($cmd, $output, $status);
 	error_log("cmd=\"$cmd\", ret=$ret, output=" . join('|',$output) . ", status=$status");
 
 	if ($status != 0) {
 		$trusted = null;
 
-		$cmd = "$fwcwrap -z $zone -l $myip";
+		$cmd = "$fwcwrap -z $zone -q $myip";
 		$ret = exec($cmd, $output, $status);
 		error_log("cmd=\"$cmd\", ret=$ret, output=" . join('|',$output) . ", status=$status");
 	}
